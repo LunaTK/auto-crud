@@ -24,5 +24,11 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
+  },
+  "packageManager": "yarn@4.0.0",
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "semi": false
   }
 }
