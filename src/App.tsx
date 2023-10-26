@@ -1,34 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import AutoForm, { AutoFormSubmit } from './components/ui/auto-form'
+import { Card, CardContent } from './components/ui/card'
+import { formSchema } from './schema'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Card className="max-w-lg mx-auto my-8">
+      <CardContent>
+        <AutoForm
+          className="container"
+          formSchema={formSchema}
+          fieldConfig={{
+            password: {
+              inputProps: {
+                type: 'password',
+                placeholder: '••••••••',
+              },
+            },
+            favouriteNumber: {
+              description: 'Your favourite number between 1 and 10.',
+            },
+            acceptTerms: {
+              inputProps: {
+                required: true,
+              },
+              description: (
+                <>
+                  I agree to the{' '}
+                  <a
+                    href="#"
+                    className="text-primary underline"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      alert('Terms and conditions clicked.')
+                    }}
+                  >
+                    terms and conditions
+                  </a>
+                  .
+                </>
+              ),
+            },
+
+            birthday: {
+              description: 'We need your birthday to send you a gift.',
+            },
+
+            sendMeMails: {
+              fieldType: 'switch',
+            },
+          }}
+        >
+          <AutoFormSubmit>Send now</AutoFormSubmit>
+          <p className="text-gray-500 text-sm">
+            By submitting this form, you agree to our{' '}
+            <a href="#" className="text-primary underline">
+              terms and conditions
+            </a>
+            .
+          </p>
+        </AutoForm>
+      </CardContent>
+    </Card>
   )
 }
 
