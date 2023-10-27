@@ -2,13 +2,14 @@ import { createCrudView } from './components/auto-crud/AutoCrud'
 import { createCrudList } from './components/auto-crud/createCrudList'
 import { createUser, deleteUser, fetchUsers, readUser, updateUser } from './user-mock'
 import { User } from './schema'
+import { UserForm } from './UserForm'
 
 type ListItem = {
   id: number
   username: string
 }
 
-export const UserCrudView = createCrudView<User, ListItem>({})({
+export const UserCrudView = createCrudView<User, ListItem>({ username: 'empty' })({
   name: 'crud demo',
   action: {
     list: fetchUsers,
@@ -19,7 +20,15 @@ export const UserCrudView = createCrudView<User, ListItem>({})({
   },
   getId: ({ id }) => id,
   listToDataSource: (list) => list.users,
-  formComponent: () => () => null,
+  FormComponent: ({ initialValue, onClose, onSave }) => (
+    <UserForm
+      values={initialValue}
+      onSubmit={(user) => {
+        onSave(user)
+        onClose()
+      }}
+    />
+  ),
   ListComponent: createCrudList({
     columns: () => [
       {

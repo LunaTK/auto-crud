@@ -21,11 +21,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 export const createCrudList = <T extends Crud>({ columns }: { columns: () => ColumnDef<T['listItem']>[] }) => {
-  const CrudListTable: CrudListComponent<T> = ({ dataSource, update, del }) => {
+  const CrudListTable: CrudListComponent<T> = ({ dataSource, update, del, create }) => {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -78,12 +77,7 @@ export const createCrudList = <T extends Crud>({ columns }: { columns: () => Col
     return (
       <div className="w-full">
         <div className="flex items-center py-4">
-          <Input
-            placeholder="Filter emails..."
-            value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-            onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
-            className="max-w-sm"
-          />
+          <Button onClick={create}>New</Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">

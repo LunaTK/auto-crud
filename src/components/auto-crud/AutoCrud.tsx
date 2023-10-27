@@ -18,10 +18,8 @@ export const createCrudView =
       hooks: THooks
     }>
   ) => {
-    const { getId, name, listToDataSource, action, formComponent, ListComponent } = manifest
+    const { getId, name, listToDataSource, action, FormComponent, ListComponent } = manifest
     const { editViewType = 'page' } = manifest.options ?? {}
-
-    const CrudForm = formComponent({ initialValue, manifest })
 
     const AutoCrud: React.FC = () => {
       const list = useQuery({
@@ -34,9 +32,26 @@ export const createCrudView =
         return list.data && listToDataSource(list.data)
       }, [list])
       const selected = dataSource?.find((item) => String(getId(item)) === selectedId)
-      const isEditMode = selectedId !== null && selectedId !== undefined
+      const selectedItem = useQuery({
+        queryKey: ['crud', name, 'selected', selectedId],
+        queryFn: () => action.read(selected!),
+        enabled: !!selected,
+      })
+      const isFormMode = selectedId !== null && selectedId !== undefined
 
-      if (isEditMode && selectedId !== CREATE_INDICATOR && !selected) {
+      const listComponent = (
+        <ListComponent
+          useHooks={manifest.useHooks}
+          isLoading={list.isLoading}
+          dataSource={dataSource}
+          create={() => setSelectedId(CREATE_INDICATOR)}
+          refresh={() => list.refetch()}
+          update={(record) => setSelectedId(String(getId(record)))}
+          del={(record) => deletion.mutate(record)}
+        />
+      )
+
+      if (isFormMode && selectedId !== CREATE_INDICATOR && !selected) {
         return (
           <div>
             <div>
@@ -46,28 +61,30 @@ export const createCrudView =
             <button onClick={() => setSelectedId(null)}>Go to List</button>
           </div>
         )
-      } else if (isEditMode && editViewType === 'page') {
-        return <CrudForm {...manifest} onClose={() => setSelectedId(null)} list={list} item={selected} />
-      } else {
+      } else if (isFormMode) {
+        const editForm = (
+          <FormComponent
+            onClose={() => setSelectedId(null)}
+            initialValue={selectedItem.data ?? initialValue}
+            onSave={(data) => {
+              const mode = selectedId === CREATE_INDICATOR ? 'new' : 'edit'
+              ;(mode === 'new' ? action.create(data) : action.update(data, selected!)).then(() => list.refetch())
+            }}
+          />
+        )
+        if (editViewType === 'page') return editForm
+
         return (
           <>
-            <ListComponent
-              useHooks={manifest.useHooks}
-              isLoading={list.isLoading}
-              dataSource={dataSource}
-              create={() => setSelectedId(CREATE_INDICATOR)}
-              refresh={() => list.refetch()}
-              update={(record) => setSelectedId(String(getId(record)))}
-              del={(record) => deletion.mutate(record)}
-            />
-            <Dialog open={isEditMode} onOpenChange={(flag) => !flag && setSelectedId(null)}>
-              <DialogContent>
-                {isEditMode && <CrudForm {...manifest} onClose={() => setSelectedId(null)} list={list} item={selected} />}
-              </DialogContent>
+            {listComponent}
+            <Dialog open={isFormMode} onOpenChange={(flag) => !flag && setSelectedId(null)}>
+              <DialogContent>{editForm}</DialogContent>
             </Dialog>
           </>
         )
       }
+
+      return listComponent
     }
 
     return AutoCrud

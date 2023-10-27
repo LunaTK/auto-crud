@@ -1,5 +1,3 @@
-import type { UseQueryResult } from '@tanstack/react-query'
-
 type Id = string | number
 
 type CrudViewOptions = {
@@ -38,20 +36,17 @@ export type CrudManifest<T extends Crud> = {
   /**
    * For Create / Update
    */
-  formComponent: CrudFormComponent<T>
+  FormComponent: CrudFormComponent<T>
   /**
    * ETC
    */
   options?: CrudViewOptions
 }
 
-export type CrudFormComponent<T extends Crud> = (props: {
-  initialValue: Partial<T['data']>
-  manifest: CrudManifest<T>
-}) => React.FunctionComponent<{
+export type CrudFormComponent<T extends Crud> = React.FunctionComponent<{
   onClose: () => void
-  list: UseQueryResult<T['list']>
-  item?: T['listItem']
+  onSave: (data: T['data']) => void
+  initialValue?: Partial<T['data']>
 }>
 
 export type CrudListComponent<T extends Crud> = React.FunctionComponent<{
