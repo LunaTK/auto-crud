@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react'
 import type { CrudManifest } from './type'
 import { Dialog, DialogContent } from '@radix-ui/react-dialog'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 const CREATE_INDICATOR = '__create__'
 
 export const createCrudView =
-  <TFormData extends Record<string, any>, TListItem extends Record<string, any>>(initialValue: Partial<TFormData>) =>
+  <TFormData extends Record<string, unknown>, TListItem extends Record<string, unknown>>(initialValue: Partial<TFormData>) =>
   <TList, TCreatePayload, TUpdatePayload, TDeletePayload, THooks>(
     manifest: CrudManifest<{
-      formData: TFormData
+      data: TFormData
       list: TList
       listItem: TListItem
       createPayload: TCreatePayload
@@ -17,14 +18,17 @@ export const createCrudView =
       hooks: THooks
     }>
   ) => {
-    const { getId, useList, listToDataSource, useDelete, mkDeletePayload, formComponent, ListComponent } = manifest
+    const { getId, name, listToDataSource, action, formComponent, ListComponent } = manifest
     const { editViewType = 'page' } = manifest.options ?? {}
 
     const CrudForm = formComponent({ initialValue, manifest })
 
     const AutoCrud: React.FC = () => {
-      const list = useList()
-      const deletion = useDelete()
+      const list = useQuery({
+        queryKey: ['crud', name, 'list'],
+        queryFn: action.list,
+      })
+      const deletion = useMutation({ mutationFn: action.delete })
       const [selectedId, setSelectedId] = useState<string | null>('')
       const dataSource = useMemo(() => {
         return list.data && listToDataSource(list.data)
@@ -50,7 +54,7 @@ export const createCrudView =
             onClick={() => {
               if (!confirm('정말로 삭제하시겠습니까')) return
 
-              deletion.mutateAsync(mkDeletePayload(record), {
+              deletion.mutateAsync(record, {
                 onSuccess: () => list.refetch(),
               })
             }}

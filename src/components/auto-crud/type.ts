@@ -1,4 +1,4 @@
-import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query'
+import type { UseQueryResult } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 
 type Id = string | number
@@ -8,7 +8,7 @@ type CrudViewOptions = {
 }
 
 export type Crud = {
-  formData: unknown
+  data: unknown
   list: unknown
   listItem: unknown
   createPayload: unknown
@@ -18,27 +18,27 @@ export type Crud = {
 }
 
 export type CrudManifest<T extends Crud> = {
+  name: string
   /**
    * FDelete
    */
-  mkDeletePayload: (item: T['listItem']) => T['deletePayload']
-  useDelete: () => UseMutationResult<unknown, unknown, T['deletePayload']>
+  action: {
+    list: () => Promise<T['list']>
+    create: (payload: T['data']) => Promise<void>
+    read: (item: T['listItem']) => Promise<T['data']>
+    update: (data: T['data'], listItem: T['listItem']) => Promise<void>
+    delete: (item: T['listItem']) => Promise<void>
+  }
   /**
    * For List
    */
   getId: (item: T['listItem']) => Id
   useHooks?: () => T['hooks']
-  useList: () => UseQueryResult<T['list']>
   listToDataSource: (asdf: T['list']) => T['listItem'][]
   ListComponent: CrudListComponent<T>
   /**
    * For Create / Update
    */
-  useCreate: () => UseMutationResult<unknown, unknown, T['createPayload']>
-  useUpdate: () => UseMutationResult<unknown, unknown, T['updatePayload']>
-  listItemToData: (item: T['listItem'], hooks: T['hooks']) => T['data'] | Promise<T['data']>
-  mkCreatePayload: (item: T['data']) => T['createPayload']
-  mkUpdatePayload: (newValue: T['data'], base: T['listItem']) => T['updatePayload']
   formComponent: CrudFormComponent<T>
   /**
    * ETC

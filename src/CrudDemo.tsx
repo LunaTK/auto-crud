@@ -1,36 +1,27 @@
 import { createCrudView } from './components/auto-crud/AutoCrud'
 import { createCrudList } from './components/auto-crud/createCrudList'
-import { FormValues } from './schema'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { createUser, deleteUser, fetchUsers, readUser, updateUser } from './user-mock'
+import { User } from './schema'
 
 type ListItem = {
   id: number
-  name: string
+  username: string
 }
 
-const t = createCrudView<FormValues, ListItem>({})
-
-const a = t({
-  useList: () =>
-    useQuery({
-      queryKey: ['list'],
-      queryFn: () => ({
-        items: [{ id: 1234, name: 'Alice' }],
-      }),
-    }),
-  listToDataSource: (list) => list.items,
-  useCreate: () => useMutation({ mutationFn: async (newForm: FormValues) => void 0 }),
-  useDelete: () => useMutation({ mutationFn: async (id: number) => void 0 }),
-  useUpdate: () => useMutation({ mutationFn: async (id: number, newForm: FormValues) => void 0 }),
-  listItemToData: (item) => item,
+export const UserCrudView = createCrudView<User, ListItem>({})({
+  name: 'crud demo',
+  action: {
+    list: fetchUsers,
+    create: createUser,
+    read: ({ id }) => readUser(id),
+    update: (user, { id }) => updateUser(id, user),
+    delete: ({ id }) => deleteUser(id),
+  },
+  getId: ({ id }) => id,
+  listToDataSource: (list) => list.users,
   formComponent: () => () => null,
   ListComponent: createCrudList({
     rowKey: 'id',
-    columns: (hooks) => [],
+    columns: () => [],
   }),
-  mkDeletePayload: (item) => void 0,
-  getId: () => void 0,
-  mkUpdatePayload: () => void 0,
 })
-
-export const CrudDemo = () => {}

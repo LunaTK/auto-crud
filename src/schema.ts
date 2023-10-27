@@ -1,6 +1,6 @@
 import z from 'zod'
 
-export const formSchema = z.object({
+export const userSchema = z.object({
   username: z
     .string({
       required_error: 'Username is required.',
@@ -23,4 +23,4 @@ export const formSchema = z.object({
     }),
 })
 
-export type FormValues = z.infer<typeof formSchema>
+export type User = z.infer<typeof userSchema>
