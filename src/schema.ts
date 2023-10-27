@@ -21,40 +21,6 @@ export const formSchema = z.object({
     .min(8, {
       message: 'Password must be at least 8 characters.',
     }),
-
-  favouriteNumber: z.coerce // When using numbers and dates, you must use coerce
-    .number({
-      invalid_type_error: 'Favourite number must be a number.',
-    })
-    .min(1, {
-      message: 'Favourite number must be at least 1.',
-    })
-    .max(10, {
-      message: 'Favourite number must be at most 10.',
-    })
-    .default(5) // You can set a default value
-    .optional(),
-
-  acceptTerms: z
-    .boolean()
-    .describe('Accept terms and conditions.')
-    .refine((value) => value, {
-      message: 'You must accept the terms and conditions.',
-      path: ['acceptTerms'],
-    }),
-
-  // Date will show a date picker
-  birthday: z.coerce.date().optional(),
-
-  sendMeMails: z.boolean().optional(),
-
-  // Enum will show a select
-  color: z.enum(['red', 'green', 'blue']),
-
-  // Create sub-objects to create accordion sections
-  address: z.object({
-    street: z.string(),
-    city: z.string(),
-    zip: z.string(),
-  }),
 })
+
+export type FormValues = z.infer<typeof formSchema>
