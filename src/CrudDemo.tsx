@@ -21,7 +21,15 @@ export const UserCrudView = createCrudView<User, ListItem>({})({
   listToDataSource: (list) => list.users,
   formComponent: () => () => null,
   ListComponent: createCrudList({
-    rowKey: 'id',
-    columns: () => [],
+    columns: () => [
+      {
+        accessorKey: 'id',
+        accessorFn: ({ id }) => id,
+      },
+      {
+        accessorKey: 'username',
+        accessorFn: ({ username }) => username,
+      },
+    ],
   }),
 })
