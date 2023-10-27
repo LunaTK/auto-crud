@@ -38,6 +38,7 @@ export const createCrudList = <T extends Crud>({ columns }: { columns: () => Col
           id: 'actions',
           enableHiding: false,
           maxSize: 40,
+          header: () => 'Action',
           cell: ({ row }) => {
             return (
               <DropdownMenu>
