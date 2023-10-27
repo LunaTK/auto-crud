@@ -1,5 +1,4 @@
 import type { UseQueryResult } from '@tanstack/react-query'
-import type { ReactNode } from 'react'
 
 type Id = string | number
 
@@ -56,12 +55,11 @@ export type CrudFormComponent<T extends Crud> = (props: {
 }>
 
 export type CrudListComponent<T extends Crud> = React.FunctionComponent<{
-  createButton: () => ReactNode
-  refreshButton: () => ReactNode
-  deleteEditButton: (item: T['listItem']) => ReactNode
-  deleteButton: (item: T['listItem']) => ReactNode
-  editButton: (item: T['listItem']) => ReactNode
   dataSource: T['listItem'][] | undefined
+  create: VoidFunction
+  update: (item: T['listItem']) => void
+  del: (item: T['listItem']) => void
   isLoading: boolean
+  refresh: VoidFunction
   useHooks?: () => T['hooks']
 }>

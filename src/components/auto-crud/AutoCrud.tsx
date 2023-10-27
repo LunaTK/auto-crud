@@ -28,7 +28,7 @@ export const createCrudView =
         queryKey: ['crud', name, 'list'],
         queryFn: action.list,
       })
-      const deletion = useMutation({ mutationFn: action.delete })
+      const deletion = useMutation({ mutationFn: action.delete, onSuccess: () => list.refetch() })
       const [selectedId, setSelectedId] = useState<string | null>(null)
       const dataSource = useMemo(() => {
         return list.data && listToDataSource(list.data)
@@ -49,49 +49,16 @@ export const createCrudView =
       } else if (isEditMode && editViewType === 'page') {
         return <CrudForm {...manifest} onClose={() => setSelectedId(null)} list={list} item={selected} />
       } else {
-        const deleteButton = (record: TListItem) => (
-          <button
-            onClick={() => {
-              if (!confirm('정말로 삭제하시겠습니까')) return
-
-              deletion.mutateAsync(record, {
-                onSuccess: () => list.refetch(),
-              })
-            }}
-          >
-            삭제
-          </button>
-        )
-        const editButton = (record: TListItem) => (
-          <button
-            onClick={() => {
-              setSelectedId(String(getId(record)))
-            }}
-          >
-            수정
-          </button>
-        )
-        const deleteEditButton = (record: TListItem) => (
-          <>
-            {editButton(record)} {deleteButton(record)}
-          </>
-        )
-
         return (
           <>
             <ListComponent
               useHooks={manifest.useHooks}
               isLoading={list.isLoading}
               dataSource={dataSource}
-              createButton={() => <button onClick={() => setSelectedId(CREATE_INDICATOR)}>새로 생성</button>}
-              refreshButton={() => (
-                <button disabled={list.isLoading} onClick={() => list.refetch()}>
-                  새로고침
-                </button>
-              )}
-              deleteButton={deleteButton}
-              editButton={editButton}
-              deleteEditButton={deleteEditButton}
+              create={() => setSelectedId(CREATE_INDICATOR)}
+              refresh={() => list.refetch()}
+              update={(record) => setSelectedId(String(getId(record)))}
+              del={(record) => deletion.mutate(record)}
             />
             <Dialog open={isEditMode} onOpenChange={(flag) => !flag && setSelectedId(null)}>
               <DialogContent>

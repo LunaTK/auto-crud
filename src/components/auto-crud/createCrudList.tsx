@@ -12,14 +12,20 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ChevronDownIcon } from '@radix-ui/react-icons'
+import { ChevronDownIcon, DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 export const createCrudList = <T extends Crud>({ columns }: { columns: () => ColumnDef<T['listItem']>[] }) => {
-  const CrudListTable: CrudListComponent<T> = ({ dataSource }) => {
+  const CrudListTable: CrudListComponent<T> = ({ dataSource, update, del }) => {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -27,7 +33,32 @@ export const createCrudList = <T extends Crud>({ columns }: { columns: () => Col
 
     const table = useReactTable({
       data: dataSource ?? [],
-      columns: columns(),
+      columns: [
+        ...columns(),
+        {
+          id: 'actions',
+          enableHiding: false,
+          maxSize: 40,
+          cell: ({ row }) => {
+            return (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="w-8 h-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <DotsHorizontalIcon className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => update(row)}>Edit</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive" onClick={() => confirm('Sure to delete?') && del(row)}>
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
+          },
+        },
+      ],
       onSortingChange: setSorting,
       onColumnFiltersChange: setColumnFilters,
       getCoreRowModel: getCoreRowModel(),
