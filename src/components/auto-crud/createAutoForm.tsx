@@ -14,12 +14,8 @@ export const createAutoForm = <TSchema extends ZodObjectOrWrapped, T extends Cru
   fieldConfig,
 }: Props<TSchema>) => {
   const AutoFormInstance: CrudFormComponent<T> = (props) => {
-    const handleSubmit = (values: TypeOf<TSchema>) => {
-      props.onSave(values)
-      props.onClose()
-    }
     return (
-      <AutoForm formSchema={schema} fieldConfig={fieldConfig} values={props.initialValue} onSubmit={handleSubmit}>
+      <AutoForm formSchema={schema} fieldConfig={fieldConfig} values={props.initialValue} onSubmit={props.onSave}>
         <AutoFormSubmit>Send now</AutoFormSubmit>
       </AutoForm>
     )

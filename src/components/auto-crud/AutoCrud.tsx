@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { CrudManifest } from './type'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
+import toast from 'react-hot-toast'
 
 const CREATE_INDICATOR = '__create__'
 
@@ -64,11 +65,20 @@ export const createCrudView =
         }
         return (
           <FormComponent
-            onClose={() => setSelectedId(null)}
+            loading={selectedItem.isLoading}
+            mode={selectedId === CREATE_INDICATOR ? 'create' : 'update'}
             initialValue={selectedItem.data ?? initialValue}
             onSave={(data) => {
               const mode = selectedId === CREATE_INDICATOR ? 'new' : 'edit'
-              ;(mode === 'new' ? action.create(data) : action.update(data, selected!)).then(() => list.refetch())
+              const promise = (mode === 'new' ? action.create(data) : action.update(data, selected!)).then(() => {
+                list.refetch()
+                setSelectedId(null)
+              })
+              toast.promise(promise, {
+                loading: `Saving ${name} (${selectedId})...`,
+                success: `${name} (${selectedId}) saved`,
+                error: `Failed to save ${name} (${selectedId})`,
+              })
             }}
           />
         )
