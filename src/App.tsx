@@ -1,11 +1,11 @@
 import { createCrudView } from './components/auto-crud/AutoCrud'
+import { createAutoForm } from './components/auto-crud/createAutoForm'
 import { createCrudList } from './components/auto-crud/createCrudList'
 import { createUser, deleteUser, fetchUsers, readUser, updateUser } from './lib/api-mock'
-import type { User, UserSummary } from './schema'
-import { UserForm } from './UserForm'
+import { userSchema, type User, type UserSummary } from './schema'
 
 const UserCrudView = createCrudView<User, UserSummary>({ username: 'empty' })({
-  name: 'crud demo',
+  name: 'User',
   action: {
     list: fetchUsers,
     create: createUser,
@@ -15,15 +15,7 @@ const UserCrudView = createCrudView<User, UserSummary>({ username: 'empty' })({
   },
   getId: ({ id }) => id,
   listToDataSource: (list) => list.users,
-  FormComponent: ({ initialValue, onClose, onSave }) => (
-    <UserForm
-      values={initialValue}
-      onSubmit={(user) => {
-        onSave(user)
-        onClose()
-      }}
-    />
-  ),
+  FormComponent: createAutoForm({ schema: userSchema }),
   ListComponent: createCrudList({
     columns: () => [
       {
