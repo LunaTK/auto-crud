@@ -10,4 +10,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  base: '/auto-crud',
+  build: {
+    outDir: 'docs',
+  },
 })
