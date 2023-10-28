@@ -26,7 +26,7 @@ export const createCrudList = <T extends Crud>({ columns }: { columns: () => Col
                   <Button onClick={() => update(row)} variant="ghost" size="icon">
                     <Pencil1Icon className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" onClick={() => confirm('Sure to delete?') && del(row)} size="icon">
+                  <Button variant="ghost" onClick={() => del(row)} size="icon">
                     <TrashIcon className="w-4 h-4 text-destructive" />
                   </Button>
                 </>
