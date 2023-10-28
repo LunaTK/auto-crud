@@ -19,7 +19,6 @@ export const createCrudView =
     }>
   ) => {
     const { getId, name, listToDataSource, action, FormComponent, ListComponent } = manifest
-    const { editViewType = 'page' } = manifest.options ?? {}
 
     const AutoCrud: React.FC = () => {
       const list = useQuery({
@@ -51,18 +50,19 @@ export const createCrudView =
         />
       )
 
-      if (isFormMode && selectedId !== CREATE_INDICATOR && !selected) {
-        return (
-          <div>
+      const formComponent = (() => {
+        if (isFormMode && selectedId !== CREATE_INDICATOR && !selected) {
+          return (
             <div>
-              ID <i>{String(selectedId)}</i>does not exist
-            </div>
+              <div>
+                ID <i>{String(selectedId)}</i>does not exist
+              </div>
 
-            <button onClick={() => setSelectedId(null)}>Go to List</button>
-          </div>
-        )
-      } else if (isFormMode) {
-        const editForm = (
+              <button onClick={() => setSelectedId(null)}>Go to List</button>
+            </div>
+          )
+        }
+        return (
           <FormComponent
             onClose={() => setSelectedId(null)}
             initialValue={selectedItem.data ?? initialValue}
@@ -72,27 +72,24 @@ export const createCrudView =
             }}
           />
         )
-        if (editViewType === 'page') return editForm
+      })()
 
-        return (
-          <>
-            {listComponent}
-            <Sheet open={isFormMode} onOpenChange={(flag) => !flag && setSelectedId(null)}>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>
-                    {selectedId === CREATE_INDICATOR ? 'Create' : 'Edit'} {name}
-                  </SheetTitle>
-                </SheetHeader>
+      return (
+        <>
+          {listComponent}
+          <Sheet open={isFormMode} onOpenChange={(flag) => !flag && setSelectedId(null)}>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>
+                  {selectedId === CREATE_INDICATOR ? 'Create' : 'Edit'} {name}
+                </SheetTitle>
+              </SheetHeader>
 
-                {editForm}
-              </SheetContent>
-            </Sheet>
-          </>
-        )
-      }
-
-      return listComponent
+              {formComponent}
+            </SheetContent>
+          </Sheet>
+        </>
+      )
     }
 
     return AutoCrud

@@ -28,9 +28,6 @@ const UserCrudView = createCrudView<User, UserSummary>({ username: 'empty' })({
       },
     ],
   }),
-  options: {
-    editViewType: 'drawer',
-  },
 })
 
 export default function App() {

@@ -1,9 +1,5 @@
 type Id = string | number
 
-type CrudViewOptions = {
-  editViewType: 'page' | 'drawer'
-}
-
 export type Crud = {
   data: unknown
   list: unknown
@@ -17,7 +13,7 @@ export type Crud = {
 export type CrudManifest<T extends Crud> = {
   name: string
   /**
-   * FDelete
+   * CRUD API
    */
   action: {
     list: () => Promise<T['list']>
@@ -27,20 +23,13 @@ export type CrudManifest<T extends Crud> = {
     delete: (item: T['listItem']) => Promise<void>
   }
   /**
-   * For List
+   * For List and Form
    */
   getId: (item: T['listItem']) => Id
   useHooks?: () => T['hooks']
   listToDataSource: (asdf: T['list']) => T['listItem'][]
   ListComponent: CrudListComponent<T>
-  /**
-   * For Create / Update
-   */
   FormComponent: CrudFormComponent<T>
-  /**
-   * ETC
-   */
-  options?: CrudViewOptions
 }
 
 export type CrudFormComponent<T extends Crud> = React.FunctionComponent<{
