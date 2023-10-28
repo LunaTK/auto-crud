@@ -12,6 +12,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>
-    <Toaster />
+    <Toaster
+      position="top-right"
+      toastOptions={{
+        className: 'border border-primary/20',
+      }}
+    />
   </React.StrictMode>
 )

@@ -15,7 +15,7 @@ export const createUser = async (user: User) => {
 }
 
 export const readUser = async (id: number) => {
-  await sleep(1000)
+  await sleep(500)
   return users[id]! // TODO: handle undefined
 }
 
