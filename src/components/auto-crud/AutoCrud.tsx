@@ -65,9 +65,15 @@ export const createCrudView =
           isLoading={list.isLoading}
           dataSource={dataSource}
           create={() => setSelectedId(CREATE_INDICATOR)}
-          refresh={() => list.refetch()}
+          refresh={invalidate}
           update={(record) => setSelectedId(String(getId(record)))}
-          del={(record) => deletion.mutate(record)}
+          del={(record) =>
+            toast.promise(deletion.mutateAsync(record), {
+              loading: `Deleting ${name} (${selectedId})...`,
+              success: `${name} (${selectedId}) deleted`,
+              error: `Failed to delete ${name} (${selectedId})`,
+            })
+          }
         />
       )
 
