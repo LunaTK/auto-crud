@@ -25,6 +25,7 @@ export const createCrudView =
 
     const AutoCrud: React.FC = () => {
       const queryClient = useQueryClient()
+      const invalidate = () => queryClient.invalidateQueries({ queryKey: ['crud', name] })
       const list = useQuery({
         queryKey: ['crud', name, 'list'],
         queryFn: action.list,
@@ -37,11 +38,11 @@ export const createCrudView =
           return action.update(data, selected!)
         },
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['crud', name] })
+          invalidate()
           setSelectedId(null)
         },
       })
-      const deletion = useMutation({ mutationFn: action.delete, onSuccess: () => list.refetch() })
+      const deletion = useMutation({ mutationFn: action.delete, onSuccess: () => invalidate() })
       const [selectedId, _setSelectedId] = useState<string | null>(null)
       const setSelectedId = (id: string | null) => {
         _setSelectedId(id)
