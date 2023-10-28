@@ -3,6 +3,8 @@ import type { CrudManifest } from './type'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
 import toast from 'react-hot-toast'
+import { Alert, AlertTitle, AlertDescription } from '../ui/alert'
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 
 const CREATE_INDICATOR = '__create__'
 
@@ -26,6 +28,18 @@ export const createCrudView =
       const list = useQuery({
         queryKey: ['crud', name, 'list'],
         queryFn: action.list,
+      })
+      const createOrUpdate = useMutation({
+        mutationFn: (data: TFormData) => {
+          if (selectedId === CREATE_INDICATOR) {
+            return action.create(data)
+          }
+          return action.update(data, selected!)
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['crud', name] })
+          setSelectedId(null)
+        },
       })
       const deletion = useMutation({ mutationFn: action.delete, onSuccess: () => list.refetch() })
       const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -70,12 +84,7 @@ export const createCrudView =
             mode={selectedId === CREATE_INDICATOR ? 'create' : 'update'}
             initialValue={selectedItem.data ?? initialValue}
             onSave={(data) => {
-              const mode = selectedId === CREATE_INDICATOR ? 'new' : 'edit'
-              const promise = (mode === 'new' ? action.create(data) : action.update(data, selected!)).then(() => {
-                queryClient.invalidateQueries({ queryKey: ['crud', name] })
-                setSelectedId(null)
-              })
-              toast.promise(promise, {
+              toast.promise(createOrUpdate.mutateAsync(data), {
                 loading: `Saving ${name} (${selectedId})...`,
                 success: `${name} (${selectedId}) saved`,
                 error: `Failed to save ${name} (${selectedId})`,
@@ -96,6 +105,8 @@ export const createCrudView =
                 </SheetTitle>
               </SheetHeader>
 
+              {createOrUpdate.error && <AlertDestructive error={createOrUpdate.error} />}
+
               {formComponent}
             </SheetContent>
           </Sheet>
@@ -105,3 +116,13 @@ export const createCrudView =
 
     return AutoCrud
   }
+
+function AlertDestructive(props: { error: unknown }) {
+  return (
+    <Alert variant="destructive">
+      <ExclamationTriangleIcon className="w-4 h-4" />
+      <AlertTitle>Error</AlertTitle>
+      <AlertDescription>{props.error instanceof Error ? props.error.message : JSON.stringify(props.error)}</AlertDescription>
+    </Alert>
+  )
+}

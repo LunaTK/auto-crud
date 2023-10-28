@@ -11,6 +11,9 @@ export const fetchUsers = async () => {
 
 export const createUser = async (user: User) => {
   await sleep(1000)
+  if (users.find((u) => u.username === user.username)) {
+    throw new Error('Username already exists')
+  }
   users.push(user)
 }
 
