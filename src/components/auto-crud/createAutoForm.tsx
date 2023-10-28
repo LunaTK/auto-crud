@@ -15,6 +15,10 @@ export const createAutoForm = <TSchema extends ZodObjectOrWrapped, T extends Cru
   fieldConfig,
 }: Props<TSchema>) => {
   const AutoFormInstance: CrudFormComponent<T> = (props) => {
+    const handleSubmit = (values: TypeOf<TSchema>) => {
+      props.onSave(values)
+      props.onClose()
+    }
     return (
       <Card className="max-w-lg mx-auto my-8">
         <CardContent>
@@ -23,10 +27,7 @@ export const createAutoForm = <TSchema extends ZodObjectOrWrapped, T extends Cru
             fieldConfig={fieldConfig}
             className="container"
             values={props.initialValue}
-            onSubmit={(newValue) => {
-              props.onSave(newValue)
-              props.onClose()
-            }}
+            onSubmit={handleSubmit}
           >
             <AutoFormSubmit>Send now</AutoFormSubmit>
           </AutoForm>
