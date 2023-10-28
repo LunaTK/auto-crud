@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { CrudManifest } from './type'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet'
 import toast from 'react-hot-toast'
 import { Alert, AlertTitle, AlertDescription } from '../ui/alert'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
@@ -104,10 +104,13 @@ export const createCrudView =
           {listComponent}
           <Sheet open={isFormMode} onOpenChange={(flag) => !flag && setSelectedId(null)}>
             <SheetContent>
-              <SheetHeader>
+              <SheetHeader className="mb-4">
                 <SheetTitle>
                   {selectedId === CREATE_INDICATOR ? 'Create' : 'Edit'} {name}
                 </SheetTitle>
+                <SheetDescription>
+                  {name} ID : {selectedId}
+                </SheetDescription>
               </SheetHeader>
 
               {createOrUpdate.error && <AlertDestructive error={createOrUpdate.error} />}
