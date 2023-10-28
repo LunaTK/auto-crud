@@ -42,7 +42,11 @@ export const createCrudView =
         },
       })
       const deletion = useMutation({ mutationFn: action.delete, onSuccess: () => list.refetch() })
-      const [selectedId, setSelectedId] = useState<string | null>(null)
+      const [selectedId, _setSelectedId] = useState<string | null>(null)
+      const setSelectedId = (id: string | null) => {
+        _setSelectedId(id)
+        createOrUpdate.reset()
+      }
       const dataSource = useMemo(() => {
         return list.data && listToDataSource(list.data)
       }, [list])
