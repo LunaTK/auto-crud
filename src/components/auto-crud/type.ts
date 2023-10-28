@@ -35,6 +35,8 @@ export type CrudManifest<T extends Crud> = {
 export type CrudFormComponent<T extends Crud> = React.FunctionComponent<{
   onSave: (data: T['data']) => void
   initialValue?: Partial<T['data']>
+  loading: boolean
+  mode: 'create' | 'update'
 }>
 
 export type CrudListComponent<T extends Crud> = React.FunctionComponent<{
