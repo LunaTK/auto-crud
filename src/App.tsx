@@ -32,7 +32,7 @@ const UserCrudView = createCrudView<User, UserSummary>({ username: 'empty' })({
 
 export default function App() {
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl px-4 mx-auto">
       <UserCrudView />
     </div>
   )
