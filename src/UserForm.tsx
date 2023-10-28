@@ -1,4 +1,3 @@
-import './App.css'
 import AutoForm, { AutoFormSubmit } from './components/ui/auto-form'
 import { Card, CardContent } from './components/ui/card'
 import { User, userSchema } from './schema'

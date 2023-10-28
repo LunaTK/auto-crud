@@ -24,3 +24,8 @@ export const userSchema = z.object({
 })
 
 export type User = z.infer<typeof userSchema>
+
+export type UserSummary = {
+  id: number
+  username: string
+}

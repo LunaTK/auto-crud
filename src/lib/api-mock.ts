@@ -1,4 +1,4 @@
-import { User } from './schema'
+import { User } from '../schema'
 
 const users: User[] = [{ username: 'Alice', password: 'qwert1234' }]
 
