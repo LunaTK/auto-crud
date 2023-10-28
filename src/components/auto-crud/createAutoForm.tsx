@@ -1,5 +1,4 @@
 import AutoForm, { AutoFormSubmit } from '@/components/ui/auto-form'
-import { Card, CardContent } from '@/components/ui/card'
 import { ZodObjectOrWrapped } from '../ui/auto-form/utils'
 import { FieldConfig } from '../ui/auto-form/types'
 import { Crud, CrudFormComponent } from './type'
@@ -20,19 +19,9 @@ export const createAutoForm = <TSchema extends ZodObjectOrWrapped, T extends Cru
       props.onClose()
     }
     return (
-      <Card className="max-w-lg mx-auto my-8">
-        <CardContent>
-          <AutoForm
-            formSchema={schema}
-            fieldConfig={fieldConfig}
-            className="container"
-            values={props.initialValue}
-            onSubmit={handleSubmit}
-          >
-            <AutoFormSubmit>Send now</AutoFormSubmit>
-          </AutoForm>
-        </CardContent>
-      </Card>
+      <AutoForm formSchema={schema} fieldConfig={fieldConfig} values={props.initialValue} onSubmit={handleSubmit}>
+        <AutoFormSubmit>Send now</AutoFormSubmit>
+      </AutoForm>
     )
   }
   return AutoFormInstance

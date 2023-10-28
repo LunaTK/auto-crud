@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { CrudManifest } from './type'
-import { Dialog, DialogContent } from '@radix-ui/react-dialog'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
 
 const CREATE_INDICATOR = '__create__'
 
@@ -77,9 +77,17 @@ export const createCrudView =
         return (
           <>
             {listComponent}
-            <Dialog open={isFormMode} onOpenChange={(flag) => !flag && setSelectedId(null)}>
-              <DialogContent>{editForm}</DialogContent>
-            </Dialog>
+            <Sheet open={isFormMode} onOpenChange={(flag) => !flag && setSelectedId(null)}>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>
+                    {selectedId === CREATE_INDICATOR ? 'Create' : 'Edit'} {name}
+                  </SheetTitle>
+                </SheetHeader>
+
+                {editForm}
+              </SheetContent>
+            </Sheet>
           </>
         )
       }
