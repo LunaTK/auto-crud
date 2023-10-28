@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { CrudManifest } from './type'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
 import toast from 'react-hot-toast'
 
@@ -22,6 +22,7 @@ export const createCrudView =
     const { getId, name, listToDataSource, action, FormComponent, ListComponent } = manifest
 
     const AutoCrud: React.FC = () => {
+      const queryClient = useQueryClient()
       const list = useQuery({
         queryKey: ['crud', name, 'list'],
         queryFn: action.list,
@@ -71,7 +72,7 @@ export const createCrudView =
             onSave={(data) => {
               const mode = selectedId === CREATE_INDICATOR ? 'new' : 'edit'
               const promise = (mode === 'new' ? action.create(data) : action.update(data, selected!)).then(() => {
-                list.refetch()
+                queryClient.invalidateQueries({ queryKey: ['crud', name] })
                 setSelectedId(null)
               })
               toast.promise(promise, {
