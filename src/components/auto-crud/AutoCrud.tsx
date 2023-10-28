@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import { Alert, AlertTitle, AlertDescription } from '../ui/alert'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 
-const CREATE_INDICATOR = '__create__'
+const CREATE_INDICATOR = '_create_new_'
 
 export const createCrudView =
   <TFormData extends Record<string, unknown>, TListItem extends Record<string, unknown>>(initialValue: Partial<TFormData>) =>
