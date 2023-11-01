@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { CrudManifest } from './type'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet'
@@ -48,9 +48,7 @@ export const createCrudView =
         _setSelectedId(id)
         createOrUpdate.reset()
       }
-      const dataSource = useMemo(() => {
-        return list.data && listToDataSource(list.data)
-      }, [list])
+      const dataSource = list.data && listToDataSource(list.data)
       const selected = dataSource?.find((item) => String(getId(item)) === selectedId)
       const selectedItem = useQuery({
         queryKey: ['crud', name, 'selected', selectedId],
