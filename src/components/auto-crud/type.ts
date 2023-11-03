@@ -24,7 +24,7 @@ export type CrudManifest<T extends Crud> = {
    */
   getId: (item: T['listItem']) => Id
   useHooks?: () => T['hooks']
-  listToDataSource: (asdf: T['list']) => T['listItem'][]
+  listToDataSource: (list: T['list']) => T['listItem'][]
   ListComponent: CrudListComponent<T>
   FormComponent: CrudFormComponent<T>
 }
