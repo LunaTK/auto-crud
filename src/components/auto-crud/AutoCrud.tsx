@@ -10,14 +10,11 @@ const CREATE_INDICATOR = '_create_new_'
 
 export const createCrudView =
   <TFormData extends Record<string, unknown>, TListItem extends Record<string, unknown>>(initialValue: Partial<TFormData>) =>
-  <TList, TCreatePayload, TUpdatePayload, TDeletePayload, THooks>(
+  <TList, THooks>(
     manifest: CrudManifest<{
       data: TFormData
       list: TList
       listItem: TListItem
-      createPayload: TCreatePayload
-      updatePayload: TUpdatePayload
-      deletePayload: TDeletePayload
       hooks: THooks
     }>
   ) => {

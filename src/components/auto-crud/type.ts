@@ -4,9 +4,6 @@ export type Crud = {
   data: unknown
   list: unknown
   listItem: unknown
-  createPayload: unknown
-  updatePayload: unknown
-  deletePayload: unknown
   hooks: unknown
 }
 
