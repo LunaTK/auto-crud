@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 type Id = string | number
 
 export type Crud = {
@@ -7,41 +8,41 @@ export type Crud = {
   hooks: unknown
 }
 
-export type CrudManifest<T extends Crud> = {
+export type CrudManifest<TFormData, TList, TListItem, THooks> = {
   name: string
   /**
    * CRUD API
    */
   action: {
-    list: () => Promise<T['list']>
-    create: (payload: T['data']) => Promise<void>
-    read: (item: T['listItem']) => Promise<T['data']>
-    update: (data: T['data'], listItem: T['listItem']) => Promise<void>
-    delete: (item: T['listItem']) => Promise<void>
+    list: () => Promise<TList>
+    create: (payload: TFormData) => Promise<void>
+    read: (item: TListItem) => Promise<TFormData>
+    update: (data: TFormData, listItem: TListItem) => Promise<void>
+    delete: (item: TListItem) => Promise<void>
   }
   /**
    * For List and Form
    */
-  getId: (item: T['listItem']) => Id
-  useHooks?: () => T['hooks']
-  listToDataSource: (list: T['list']) => T['listItem'][]
-  ListComponent: CrudListComponent<T>
-  FormComponent: CrudFormComponent<T>
+  getId: (item: TListItem) => Id
+  useHooks?: () => THooks
+  listToDataSource: (list: TList) => TListItem[]
+  ListComponent: CrudListComponent<TFormData, TList, TListItem, THooks>
+  FormComponent: CrudFormComponent<TFormData, TList, TListItem, THooks>
 }
 
-export type CrudFormComponent<T extends Crud> = React.FunctionComponent<{
-  onSave: (data: T['data']) => void
-  initialValue?: Partial<T['data']>
+export type CrudFormComponent<TFormData, TList, TListItem, THooks> = React.FunctionComponent<{
+  onSave: (data: TFormData) => void
+  initialValue?: Partial<TFormData>
   loading: boolean
   mode: 'create' | 'update'
 }>
 
-export type CrudListComponent<T extends Crud> = React.FunctionComponent<{
-  dataSource: T['listItem'][] | undefined
+export type CrudListComponent<TFormData, TList, TListItem, THooks> = React.FunctionComponent<{
+  dataSource: TListItem[] | undefined
   create: VoidFunction
-  update: (item: T['listItem']) => void
-  del: (item: T['listItem']) => void
+  update: (item: TListItem) => void
+  del: (item: TListItem) => void
   isLoading: boolean
   refresh: VoidFunction
-  useHooks?: () => T['hooks']
+  useHooks?: () => THooks
 }>

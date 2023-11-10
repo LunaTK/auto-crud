@@ -1,11 +1,11 @@
-import { Crud, CrudListComponent } from './type'
+import { CrudListComponent } from './type'
 import { ColumnDef } from '@tanstack/react-table'
 import { Pencil1Icon, TrashIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '../ui/data-table'
 
-export const createCrudList = <T extends Crud>({ columns }: { columns: () => ColumnDef<T['listItem']>[] }) => {
-  const CrudListTable: CrudListComponent<T> = ({ dataSource, update, del, create }) => {
+export const createCrudList = <TFormData, TList, TListItem, THooks>({ columns }: { columns: () => ColumnDef<TListItem>[] }) => {
+  const CrudListTable: CrudListComponent<TFormData, TList, TListItem, THooks> = ({ dataSource, update, del, create }) => {
     return (
       <DataTable
         toolbar={
@@ -23,10 +23,10 @@ export const createCrudList = <T extends Crud>({ columns }: { columns: () => Col
             cell: ({ row }) => {
               return (
                 <>
-                  <Button onClick={() => update(row)} variant="ghost" size="icon">
+                  <Button onClick={() => update(row.original)} variant="ghost" size="icon">
                     <Pencil1Icon className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" onClick={() => del(row)} size="icon">
+                  <Button variant="ghost" onClick={() => del(row.original)} size="icon">
                     <TrashIcon className="w-4 h-4 text-destructive" />
                   </Button>
                 </>
